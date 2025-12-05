@@ -390,4 +390,639 @@ export default function VietnameseLearningApp() {
         <div 
           className="flex items-center gap-3 cursor-pointer group" 
           onClick={() => setCurrentView('home')}
-     
+        >
+          <div className="w-10 h-10 bg-[#C62828] rounded-xl flex items-center justify-center text-[#FFEB3B] shadow-md transform group-hover:rotate-6 transition-transform border border-[#EF9A9A]">
+            <Star size={24} fill="currentColor" />
+          </div>
+          <div className="flex flex-col">
+            <h1 className="text-xl font-bold text-[#C62828] leading-none tracking-tight">Xin Chào</h1>
+            <span className="text-xs text-[#8D6E63] font-bold tracking-widest">VIETNAMESE</span>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-2 bg-[#FFF3E0] px-4 py-1.5 rounded-full border border-[#FFE0B2] shadow-sm">
+          <Trophy size={18} className="text-[#FB8C00] fill-[#FB8C00]" />
+          <span className="font-bold text-[#5D4037]">{score}</span>
+        </div>
+      </nav>
+
+      {/* 主要內容區 */}
+      <main className="container mx-auto px-4 py-8 max-w-2xl relative z-10 min-h-[85vh]">
+        {renderView()}
+      </main>
+
+      <footer className="w-full text-center py-6 text-[#A1887F] text-xs relative z-10 font-medium">
+        <p>© 2025 你好！來學越南語 • 阿信的Gemini Canvas實驗室</p>
+      </footer>
+    </div>
+  );
+}
+
+// ==========================================
+// 1. 首頁視圖 (隨機文化小知識)
+// ==========================================
+const HomeView = ({ setView }) => {
+  const dailyFact = useMemo(() => {
+    const randomIndex = Math.floor(Math.random() * culturalFacts.length);
+    return culturalFacts[randomIndex];
+  }, []);
+
+  return (
+    <div className="flex flex-col gap-8 items-center animate-fade-in">
+      {/* Hero Section */}
+      <div className="relative w-full py-6 flex flex-col items-center justify-center">
+        <div className="relative group cursor-pointer" onClick={() => setView('learning')}>
+          {/* 光環動畫 */}
+          <div className="absolute inset-0 bg-[#FFD54F] rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition-opacity duration-500 animate-pulse"></div>
+          
+          {/* 主圖標 */}
+          <div className="relative w-48 h-48 bg-gradient-to-br from-[#FFFDE7] to-[#FFFFFF] rounded-full flex items-center justify-center shadow-xl border-4 border-[#FFF9C4] transform transition-transform duration-300 group-hover:-translate-y-2 overflow-hidden ring-4 ring-white/50">
+            <div className="absolute bottom-0 w-full h-1/2 bg-[#C8E6C9] opacity-30 rounded-b-full"></div>
+            
+            {/* 人物圖示：位置上移 (-translate-y-3)，z-index 設為 0 */}
+            <AoDaiHatIcon className="w-32 h-32 relative z-0 -translate-y-3" />
+            
+            {/* 紅色按鈕：z-index 設為 10 確保浮在人物上方 */}
+            <div className="absolute bottom-5 z-10 bg-[#C62828] text-[#FFFDE7] px-5 py-1.5 rounded-full shadow-lg text-sm font-bold border border-[#EF9A9A] tracking-wide group-hover:scale-105 transition-transform">
+              Bắt đầu (開始)
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 text-center space-y-2 max-w-md">
+          <h2 className="text-3xl font-bold text-[#4E342E] cute-font tracking-wide drop-shadow-sm">
+            你好！來學越南語
+          </h2>
+          <p className="text-[#8D6E63] font-medium text-sm">
+            輕鬆自學樂趣多
+          </p>
+        </div>
+      </div>
+
+      {/* 選單卡片區 Grid Layout */}
+      <div className="grid grid-cols-1 gap-4 w-full px-2">
+        {/* 基礎教室 - 復古綠 */}
+        <MenuCard 
+          onClick={() => setView('learning')}
+          theme="green"
+          icon={<GraduationCap size={26} className="text-[#33691E]" />}
+          title="基礎教室"
+          subtitle="Lớp học cơ bản"
+          desc="單字卡、聲調與發音表"
+          rightIcon={<PhinCoffeeIcon className="w-16 h-16 opacity-90" />}
+        />
+
+        {/* 聽力挑戰 - 復古藍 */}
+        <MenuCard 
+          onClick={() => setView('listening')}
+          theme="blue"
+          icon={<Volume2 size={26} className="text-[#01579B]" />}
+          title="聽力挑戰"
+          subtitle="Luyện nghe"
+          desc="聆聽發音，選擇正確意思"
+          rightIcon={<JunkBoatIcon className="w-24 h-20 opacity-90 -mr-2" />}
+        />
+
+        {/* 單字拼寫 - 復古橘紅 */}
+        <MenuCard 
+          onClick={() => setView('writing')}
+          theme="red"
+          icon={<PenTool size={26} className="text-[#BF360C]" />}
+          title="單字拼寫"
+          subtitle="Viết chính tả"
+          desc="看中文，練習輸入越南語"
+          rightIcon={<ScooterIcon className="w-20 h-16 opacity-90" />}
+        />
+      </div>
+
+      {/* 隨機文化小知識卡片 */}
+      <div className="mt-4 w-full glass-card p-5 rounded-2xl flex items-center gap-4 border-l-4 border-[#FFCA28] transition-all hover:shadow-lg">
+        {/* NEW FIXED ICON */}
+        <div className="w-14 h-14 bg-[#FFF8E1] rounded-full flex flex-col items-center justify-center flex-shrink-0 border-2 border-[#FFCA28] shadow-sm">
+          <span className="text-xs font-bold text-[#F57F17] leading-none mb-0.5">小</span>
+          <span className="text-xs font-bold text-[#F57F17] leading-none">知識</span>
+        </div>
+        <div>
+          <h4 className="font-bold text-[#5D4037] text-lg cute-font flex items-center gap-2">
+            {dailyFact.title}
+          </h4>
+          <p className="text-[#795548] text-xs mt-1 leading-relaxed">
+            {dailyFact.content}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// 封裝選單卡片
+const MenuCard = ({ onClick, theme, icon, title, subtitle, desc, rightIcon }) => {
+  const themes = {
+    green: { bg: 'bg-[#F1F8E9]', border: 'border-[#DCEDC8]', text: 'text-[#33691E]', hover: 'hover:border-[#AED581]' },
+    blue: { bg: 'bg-[#E1F5FE]', border: 'border-[#B3E5FC]', text: 'text-[#0277BD]', hover: 'hover:border-[#4FC3F7]' },
+    red: { bg: 'bg-[#FBE9E7]', border: 'border-[#FFCCBC]', text: 'text-[#D84315]', hover: 'hover:border-[#FFAB91]' },
+  };
+  
+  const t = themes[theme] || themes.green;
+
+  return (
+    <button 
+      onClick={onClick}
+      className={`
+        relative w-full p-5 rounded-2xl text-left transition-all duration-300 
+        border shadow-sm hover:shadow-md hover:-translate-y-1 overflow-hidden
+        ${t.bg} ${t.border} ${t.hover}
+      `}
+    >
+      <div className="flex justify-between items-center relative z-10">
+        <div className="flex items-start gap-4">
+          <div className="bg-white/80 p-3 rounded-xl shadow-sm border border-white/60">
+            {icon}
+          </div>
+          <div>
+            <h3 className={`text-lg font-bold ${t.text}`}>{title}</h3>
+            <span className="text-[10px] font-bold opacity-60 uppercase tracking-widest block mb-1">{subtitle}</span>
+            <p className="text-[#5D4037] text-xs opacity-80 font-medium">{desc}</p>
+          </div>
+        </div>
+        <div className="transform translate-x-2 translate-y-1">
+           {rightIcon}
+        </div>
+      </div>
+    </button>
+  );
+};
+
+// ==========================================
+// 2. 基礎教室視圖
+// ==========================================
+const LearningView = ({ goHome, speak }) => {
+  const [tab, setTab] = useState('cards');
+  const [filter, setFilter] = useState('全部');
+  const [cardIndex, setCardIndex] = useState(0);
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  const filteredData = useMemo(() => {
+    return filter === '全部' 
+      ? vocabularyData 
+      : vocabularyData.filter(item => item.category === filter);
+  }, [filter]);
+
+  useEffect(() => {
+    setCardIndex(0);
+    setIsFlipped(false);
+  }, [filter]);
+
+  const nextCard = () => {
+    setIsFlipped(false);
+    setTimeout(() => {
+      setCardIndex((prev) => (prev + 1) % filteredData.length);
+    }, 150);
+  };
+
+  const prevCard = () => {
+    setIsFlipped(false);
+    setTimeout(() => {
+      setCardIndex((prev) => (prev - 1 + filteredData.length) % filteredData.length);
+    }, 150);
+  };
+
+  const currentCard = filteredData[cardIndex];
+
+  return (
+    <div className="flex flex-col gap-5 animate-fade-in pb-20">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <button onClick={goHome} className="text-[#5D4037] hover:text-[#3E2723] flex items-center gap-1 text-sm font-bold bg-white/80 px-3 py-1.5 rounded-full shadow-sm border border-[#D7CCC8]">
+          <ChevronLeft size={16} /> 返回
+        </button>
+        <div className="text-[#33691E] bg-[#DCEDC8] px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-[#AED581]">
+          <GraduationCap size={14} /> 基礎教室
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex p-1 bg-[#D7CCC8]/30 rounded-xl shadow-inner border border-[#D7CCC8]/50">
+        <button 
+          onClick={() => setTab('cards')}
+          className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${tab === 'cards' ? 'bg-white text-[#5D4037] shadow-sm' : 'text-[#8D6E63] hover:text-[#5D4037]'}`}
+        >
+          單字卡 ({vocabularyData.length})
+        </button>
+        <button 
+          onClick={() => setTab('tones')}
+          className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${tab === 'tones' ? 'bg-white text-[#5D4037] shadow-sm' : 'text-[#8D6E63] hover:text-[#5D4037]'}`}
+        >
+          字母與聲調
+        </button>
+      </div>
+
+      {tab === 'tones' ? (
+        <div className="flex flex-col gap-6 animate-slide-up">
+          {/* 聲調介紹 */}
+          <div className="glass-card p-6 rounded-3xl relative overflow-hidden border-t-4 border-[#EC407A]">
+            <h3 className="font-bold text-lg text-[#880E4F] mb-4 flex items-center gap-2 relative z-10">
+              <Music size={20} className="text-[#EC407A]" /> 六個聲調
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 relative z-10">
+              {tonesData.map((t, idx) => (
+                <button 
+                  key={idx}
+                  onClick={() => speak(t.example)}
+                  className="p-3 bg-white/60 rounded-2xl hover:bg-[#FCE4EC] text-left border border-[#F8BBD0] transition-all hover:scale-105 group shadow-sm"
+                >
+                  <div className="flex justify-between items-start">
+                    <span className="font-bold text-[#C2185B] text-xl font-serif">{t.symbol}</span>
+                    <Volume2 size={16} className="text-[#F06292] opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                  <div className="text-sm font-bold text-[#880E4F] mb-1">{t.name}</div>
+                  <div className="text-[11px] text-[#AD1457] leading-tight opacity-70">{t.desc}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 母音介紹 */}
+          <div className="glass-card p-6 rounded-3xl relative overflow-hidden border-t-4 border-[#7E57C2]">
+            <h3 className="font-bold text-lg text-[#311B92] mb-4 flex items-center gap-2 relative z-10">
+              <span className="text-[#651FFF] text-2xl font-serif">aăâ</span> 特殊母音
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 relative z-10">
+              {vowelsData.map((v, idx) => (
+                <button 
+                  key={idx}
+                  onClick={() => speak(v.char)}
+                  className="flex items-center gap-3 p-3 bg-white/60 rounded-2xl hover:bg-[#EDE7F6] border border-[#D1C4E9] transition-colors group shadow-sm"
+                >
+                  <span className="w-10 h-10 bg-[#673AB7] rounded-xl flex items-center justify-center font-bold text-white shadow-sm text-lg">
+                    {v.char}
+                  </span>
+                  <span className="text-xs text-[#4527A0] font-medium">{v.desc}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center gap-4 animate-slide-up h-full">
+          {/* 分類過濾器 */}
+          <div className="w-full overflow-x-auto pb-2 scrollbar-hide">
+            <div className="flex gap-2 px-1">
+              {categories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setFilter(cat)}
+                  className={`
+                    px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border
+                    ${filter === cat 
+                      ? 'bg-[#33691E] text-white border-[#33691E] shadow-md transform scale-105' 
+                      : 'bg-white text-[#5D4037] border-[#D7CCC8] hover:bg-[#EFEBE9]'}
+                  `}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 3D 翻轉卡片 */}
+          <div className="relative w-full h-80 perspective-1000 group cursor-pointer mt-2" onClick={() => setIsFlipped(!isFlipped)}>
+            <div className={`relative w-full h-full transition-all duration-700 preserve-3d transform ${isFlipped ? 'rotate-y-180' : ''}`} style={{ transformStyle: 'preserve-3d' }}>
+              
+              {/* 正面 (越南文) */}
+              <div className="absolute w-full h-full backface-hidden bg-white rounded-[2rem] shadow-xl border-4 border-[#FFF9C4] flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
+                <div className="absolute top-0 w-full h-24 bg-gradient-to-b from-[#FFFDE7] to-transparent"></div>
+                <div className="absolute top-0 right-0 p-4 opacity-20"><AoDaiHatIcon className="w-20 h-20" /></div>
+
+                <div className="z-10 flex flex-col items-center w-full">
+                  <span className="text-xs font-bold bg-[#FFF59D] text-[#F57F17] px-3 py-1 rounded-full uppercase tracking-wide border border-[#FBC02D] mb-6 shadow-sm">
+                    {currentCard.category}
+                  </span>
+                  
+                  <h2 className="text-5xl md:text-6xl font-bold text-[#C62828] cute-font mb-4 drop-shadow-sm">{currentCard.vi}</h2>
+                  
+                  <div className="mt-8 text-[#9E9D24] text-xs font-bold flex items-center gap-1 bg-[#F9FBE7] px-3 py-1 rounded-full border border-[#F0F4C3]">
+                    <RotateCw size={12} /> 翻轉看中文
+                  </div>
+                  
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); speak(currentCard.vi); }}
+                    className="absolute bottom-6 w-14 h-14 rounded-full bg-[#C62828] text-[#FFFDE7] flex items-center justify-center hover:bg-[#B71C1C] shadow-lg shadow-red-200 hover:scale-110 transition-transform z-20 border-2 border-white"
+                  >
+                    <Volume2 size={24} />
+                  </button>
+                </div>
+              </div>
+
+              {/* 背面 (中文) - 復古深色 */}
+              <div className="absolute w-full h-full backface-hidden bg-[#4E342E] rounded-[2rem] shadow-xl text-[#FFF8E1] flex flex-col items-center justify-center p-6 text-center rotate-y-180 relative border-4 border-[#8D6E63]">
+                 <div className="absolute top-6 right-8 text-white/10 font-black text-4xl font-serif">ZH</div>
+                 
+                 <div className="flex-1 flex flex-col items-center justify-center">
+                    <h2 className="text-4xl md:text-5xl font-bold mb-4">{currentCard.zh}</h2>
+                    <div className="inline-block bg-white/10 backdrop-blur-sm px-6 py-2 rounded-xl border border-white/20">
+                       <p className="font-mono text-xl tracking-wide text-[#FFCC80]">/{currentCard.guide}/</p>
+                    </div>
+                 </div>
+
+                 <div className="mb-6 opacity-60 text-xs font-bold flex items-center gap-1">
+                  <RotateCw size={12} /> 翻轉回正面
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* 控制按鈕 */}
+          <div className="flex items-center gap-6 mt-4 w-full justify-center">
+            <button 
+              onClick={prevCard} 
+              className="p-4 bg-white rounded-full shadow-md text-[#5D4037] border border-[#D7CCC8] hover:bg-[#EFEBE9] hover:scale-110 transition-all active:scale-95"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <div className="font-bold text-[#5D4037] text-sm bg-white px-4 py-2 rounded-full shadow-sm border border-[#D7CCC8]">
+              {cardIndex + 1} <span className="text-[#A1887F] mx-1">/</span> {filteredData.length}
+            </div>
+            <button 
+              onClick={nextCard} 
+              className="p-4 bg-white rounded-full shadow-md text-[#5D4037] border border-[#D7CCC8] hover:bg-[#EFEBE9] hover:scale-110 transition-all active:scale-95"
+            >
+              <ChevronRight size={24} />
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ==========================================
+// 3. 聽力遊戲組件
+// ==========================================
+const ListeningGame = ({ goHome, speak, addScore }) => {
+  const [currentQ, setCurrentQ] = useState(null);
+  const [options, setOptions] = useState([]);
+  const [status, setStatus] = useState('playing'); 
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  const initQuestion = () => {
+    const randomIdx = Math.floor(Math.random() * vocabularyData.length);
+    const question = vocabularyData[randomIdx];
+    
+    let wrongOptions = vocabularyData
+      .filter(item => item.id !== question.id)
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 3);
+      
+    const allOptions = [question, ...wrongOptions].sort(() => 0.5 - Math.random());
+    
+    setCurrentQ(question);
+    setOptions(allOptions);
+    setStatus('playing');
+    setSelectedOption(null);
+    
+    setTimeout(() => speak(question.vi), 300);
+  };
+
+  useEffect(() => {
+    initQuestion();
+  }, []);
+
+  const handleAnswer = (item) => {
+    if (status !== 'playing') return;
+    
+    setSelectedOption(item.id);
+    if (item.id === currentQ.id) {
+      setStatus('correct');
+      speak("Đúng rồi");
+      addScore();
+    } else {
+      setStatus('wrong');
+      speak("Sai rồi");
+    }
+  };
+
+  if (!currentQ) return <div className="text-center p-10">準備中...</div>;
+
+  return (
+    <div className="flex flex-col gap-6 animate-fade-in pb-20">
+      <div className="flex justify-between items-center">
+        <button onClick={goHome} className="text-[#5D4037] hover:text-[#3E2723] flex items-center gap-1 text-sm font-bold bg-white/80 px-3 py-1.5 rounded-full shadow-sm border border-[#D7CCC8]">
+          <ChevronLeft size={16} /> 返回
+        </button>
+        <div className="text-[#0277BD] bg-[#E1F5FE] px-3 py-1 rounded-full text-xs font-bold border border-[#B3E5FC]">
+          聽力練習
+        </div>
+      </div>
+
+      {/* 題目區塊 */}
+      <div className="bg-white rounded-[2rem] p-8 shadow-lg border-2 border-[#B3E5FC] flex flex-col items-center justify-center gap-4 relative overflow-hidden">
+        <div className="absolute top-0 right-0 opacity-20 transform rotate-12">
+            <JunkBoatIcon className="w-32 h-32" />
+        </div>
+        
+        <div className="z-10 flex flex-col items-center w-full">
+          <button 
+            onClick={() => speak(currentQ.vi)}
+            className={`
+              w-24 h-24 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 border-4 border-white
+              ${status === 'playing' ? 'bg-[#29B6F6] hover:bg-[#039BE5] hover:scale-105 cursor-pointer animate-pulse-slow' : 'bg-[#B0BEC5]'}
+            `}
+          >
+            <Volume2 size={40} className="text-white" />
+          </button>
+          
+          <div className="mt-4 h-12 flex items-center justify-center">
+            {status !== 'playing' ? (
+               <div className="text-center animate-bounce-in">
+                 <h3 className="text-3xl font-bold text-[#0277BD] cute-font">{currentQ.vi}</h3>
+                 <p className="text-[#546E7A] text-xs mt-1 font-medium">/{currentQ.guide}/</p>
+               </div>
+            ) : (
+              <span className="text-[#78909C] text-xs font-bold bg-[#ECEFF1] px-3 py-1 rounded-full">再次聆聽</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* 選項區塊 */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {options.map((opt) => (
+          <button
+            key={opt.id}
+            onClick={() => handleAnswer(opt)}
+            disabled={status !== 'playing'}
+            className={`
+              relative p-4 rounded-xl border-2 font-bold text-lg transition-all duration-200
+              flex items-center justify-center shadow-sm
+              ${status === 'playing' 
+                ? 'bg-white border-[#CFD8DC] hover:border-[#4FC3F7] hover:bg-[#E1F5FE] text-[#455A64] hover:-translate-y-0.5' 
+                : opt.id === currentQ.id
+                  ? 'bg-[#C8E6C9] border-[#43A047] text-[#1B5E20] ring-2 ring-[#A5D6A7] ring-offset-1'
+                  : opt.id === selectedOption 
+                    ? 'bg-[#FFEBEE] border-[#EF5350] text-[#B71C1C] opacity-60'
+                    : 'bg-[#F5F5F5] border-transparent text-[#B0BEC5] opacity-40'
+              }
+            `}
+          >
+            {opt.zh}
+            {status !== 'playing' && opt.id === currentQ.id && <Check className="absolute right-4 text-[#2E7D32]" size={20} />}
+          </button>
+        ))}
+      </div>
+
+      {/* 下一題按鈕 */}
+      {status !== 'playing' && (
+        <button 
+          onClick={initQuestion}
+          className="w-full py-4 bg-[#0277BD] text-white rounded-2xl font-bold shadow-lg hover:bg-[#01579B] hover:scale-[1.02] transition-all flex items-center justify-center gap-2 animate-slide-up"
+        >
+          下一題 <ArrowRight size={20} />
+        </button>
+      )}
+    </div>
+  );
+};
+
+// ==========================================
+// 4. 拼寫遊戲組件
+// ==========================================
+const WritingGame = ({ goHome, speak, addScore }) => {
+  const [currentQ, setCurrentQ] = useState(null);
+  const [inputVal, setInputVal] = useState('');
+  const [status, setStatus] = useState('playing');
+  const [hint, setHint] = useState(false);
+
+  const initQuestion = () => {
+    const randomIdx = Math.floor(Math.random() * vocabularyData.length);
+    setCurrentQ(vocabularyData[randomIdx]);
+    setInputVal('');
+    setStatus('playing');
+    setHint(false);
+  };
+
+  useEffect(() => {
+    initQuestion();
+  }, []);
+
+  const checkAnswer = (e) => {
+    e.preventDefault();
+    if (!inputVal.trim()) return;
+
+    if (inputVal.trim().toLowerCase() === currentQ.vi.toLowerCase()) {
+      setStatus('correct');
+      speak(currentQ.vi);
+      speak("Tuyệt vời");
+      addScore();
+    } else {
+      setStatus('wrong');
+      speak("Cố lên");
+    }
+  };
+
+  if (!currentQ) return <div>準備中...</div>;
+
+  return (
+    <div className="flex flex-col gap-6 animate-fade-in pb-20">
+      <div className="flex justify-between items-center">
+        <button onClick={goHome} className="text-[#5D4037] hover:text-[#3E2723] flex items-center gap-1 text-sm font-bold bg-white/80 px-3 py-1.5 rounded-full shadow-sm border border-[#D7CCC8]">
+          <ChevronLeft size={16} /> 返回
+        </button>
+        <div className="text-[#BF360C] bg-[#FBE9E7] px-3 py-1 rounded-full text-xs font-bold border border-[#FFCCBC]">
+          拼寫挑戰
+        </div>
+      </div>
+
+      <div className="bg-white rounded-[2.5rem] p-8 shadow-xl border-b-8 border-[#FFAB91] text-center relative overflow-hidden">
+        {/* 背景裝飾 */}
+        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#FF7043] to-[#FFCA28]"></div>
+        <div className="absolute -bottom-4 -right-4 opacity-10 transform -rotate-12">
+            <ScooterIcon className="w-40 h-32" />
+        </div>
+
+        <div className="relative z-10">
+          <span className="text-[10px] font-bold tracking-widest text-[#FF7043] uppercase bg-[#FBE9E7] px-2 py-1 rounded border border-[#FFAB91]">Translate to Vietnamese</span>
+          <h2 className="text-4xl md:text-5xl font-bold text-[#3E2723] cute-font mt-4 mb-2">{currentQ.zh}</h2>
+          
+          {hint && (
+            <div className="text-[#D84315] font-medium animate-fade-in mt-2 inline-flex items-center gap-2 bg-[#FBE9E7] px-4 py-1 rounded-full text-sm">
+              <Star size={14} fill="currentColor" /> 提示: {currentQ.vi[0]}... <span className="opacity-60">({currentQ.guide})</span>
+            </div>
+          )}
+
+          <form onSubmit={checkAnswer} className="w-full max-w-sm mx-auto flex flex-col gap-4 mt-6">
+            <input
+              type="text"
+              value={inputVal}
+              onChange={(e) => setInputVal(e.target.value)}
+              disabled={status === 'correct'}
+              placeholder="在此輸入..."
+              className={`
+                w-full p-4 text-center text-2xl rounded-2xl border-2 outline-none transition-all font-bold shadow-inner placeholder:text-[#CFD8DC]
+                ${status === 'correct' 
+                  ? 'border-[#43A047] bg-[#E8F5E9] text-[#1B5E20]' 
+                  : status === 'wrong'
+                    ? 'border-[#E57373] bg-[#FFEBEE] text-[#B71C1C] focus:border-[#F44336]'
+                    : 'border-[#CFD8DC] bg-[#F5F5F5] text-[#37474F] focus:border-[#FF7043] focus:bg-white focus:shadow-lg'
+                }
+              `}
+            />
+            
+            {status === 'playing' ? (
+               <div className="flex gap-3 mt-2">
+                  <button 
+                    type="button" 
+                    onClick={() => setHint(true)}
+                    className="flex-1 py-3 rounded-xl border-2 border-[#D7CCC8] text-[#8D6E63] font-bold hover:bg-[#EFEBE9] hover:border-[#BCAAA4] transition-colors"
+                  >
+                    提示
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="flex-[2] py-3 bg-gradient-to-r from-[#FF7043] to-[#F4511E] hover:from-[#F4511E] hover:to-[#D84315] text-white rounded-xl font-bold shadow-lg shadow-orange-200 transition-all hover:-translate-y-0.5 active:translate-y-0"
+                  >
+                    檢查答案
+                  </button>
+               </div>
+            ) : (
+              <div className="flex flex-col gap-4 animate-slide-up mt-2">
+                {status === 'wrong' && (
+                   <div className="bg-[#FFEBEE] p-3 rounded-xl border border-[#FFCDD2]">
+                     <span className="text-[#E57373] text-sm font-bold block mb-1">正確答案</span>
+                     <span className="text-[#C62828] text-2xl font-bold">{currentQ.vi}</span>
+                   </div>
+                )}
+                <button 
+                  type="button"
+                  onClick={initQuestion}
+                  className={`
+                    w-full py-4 rounded-xl font-bold text-white shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2
+                    ${status === 'correct' ? 'bg-[#43A047] hover:bg-[#2E7D32]' : 'bg-[#546E7A] hover:bg-[#455A64]'}
+                  `}
+                >
+                  {status === 'correct' ? <span>下一題 <ArrowRight size={18} className="inline"/></span> : '再試一題'}
+                </button>
+              </div>
+            )}
+          </form>
+        </div>
+      </div>
+
+      {/* 特殊符號鍵盤 */}
+      <div className="mt-2">
+        <p className="text-xs text-center text-[#90A4AE] font-bold mb-3 uppercase tracking-wider">特殊符號輔助</p>
+        <div className="flex flex-wrap justify-center gap-2">
+          {['ă', 'â', 'đ', 'ê', 'ô', 'ơ', 'ư', 'à', 'á', 'ả', 'ã', 'ạ'].map(char => (
+            <button key={char} 
+              onClick={() => setInputVal(v => v + char)}
+              className="w-10 h-10 flex items-center justify-center bg-white rounded-xl shadow-sm border-b-4 border-[#CFD8DC] text-[#455A64] font-bold hover:bg-[#FBE9E7] hover:border-[#FFCCBC] hover:text-[#D84315] active:border-b-0 active:translate-y-1 transition-all"
+            >
+              {char}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
