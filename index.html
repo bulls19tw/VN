@@ -489,30 +489,38 @@
             const [currentView, setCurrentView] = useState('home'); 
             const [score, setScore] = useState(0);
             
-            // 修正後的語音播放邏輯 (Fallback)
+            // 修正版：更強健的語音播放邏輯 (加入 gtx 參數)
             const speak = (text) => {
                 if ('speechSynthesis' in window) {
                     const voices = window.speechSynthesis.getVoices();
+                    // 1. 嘗試尋找本地或遠端的越南語發音
                     const viVoice = voices.find(v => v.lang.includes('vi'));
 
                     if (viVoice) {
                         window.speechSynthesis.cancel();
                         const utterance = new SpeechSynthesisUtterance(text);
                         utterance.voice = viVoice;
-                        utterance.lang = 'vi-VN';
+                        utterance.lang = 'vi-VN'; // 再次強制指定
                         utterance.rate = 0.8; 
                         window.speechSynthesis.speak(utterance);
-                        return; // 如果找到原生語音，就結束，不執行下面的 Fallback
+                        return;
                     }
                 }
 
-                // 如果沒有找到原生語音，使用 Google TTS Fallback
+                // 2. 如果瀏覽器找不到任何越南語音，使用 Google TTS (client=gtx)
                 try {
-                    const audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=vi`);
-                    audio.play().catch(e => console.error("Audio play failed", e));
+                    const audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=${encodeURIComponent(text)}&tl=vi`);
+                    audio.play().catch(e => {
+                        console.error("Audio play failed", e);
+                        // 3. 最後一招：如果連網路音檔都播不出來，還是試試看用預設語音念（總比沒聲音好），並指定 lang
+                        if ('speechSynthesis' in window) {
+                             const utterance = new SpeechSynthesisUtterance(text);
+                             utterance.lang = 'vi-VN'; // 希望瀏覽器能聰明地處理
+                             window.speechSynthesis.speak(utterance);
+                        }
+                    });
                 } catch (error) {
                     console.error("TTS Fallback failed", error);
-                    alert("您的裝置未安裝越南語音包，且無法連接網路語音。");
                 }
             };
 
