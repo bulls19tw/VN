@@ -690,7 +690,7 @@ const LearningView = ({ goHome, speak }) => {
             <div className={`relative w-full h-full transition-all duration-700 preserve-3d transform ${isFlipped ? 'rotate-y-180' : ''}`} style={{ transformStyle: 'preserve-3d' }}>
               
               {/* 正面 (越南文) */}
-              <div className="absolute w-full h-full backface-hidden bg-white rounded-[2rem] shadow-xl border-4 border-[#FFF9C4] flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-full backface-hidden bg-white rounded-[2rem] shadow-xl border-4 border-[#FFF9C4] flex flex-col items-center justify-center p-6 text-center overflow-hidden">
                 <div className="absolute top-0 w-full h-24 bg-gradient-to-b from-[#FFFDE7] to-transparent"></div>
                 <div className="absolute top-0 right-0 p-4 opacity-20"><AoDaiHatIcon className="w-20 h-20" /></div>
 
@@ -705,17 +705,18 @@ const LearningView = ({ goHome, speak }) => {
                     <RotateCw size={12} /> 翻轉看中文
                   </div>
                   
+                  {/* 修改：將聲音按鈕移至右下角，並調整樣式 */}
                   <button 
                     onClick={(e) => { e.stopPropagation(); speak(currentCard.vi); }}
-                    className="absolute bottom-6 w-14 h-14 rounded-full bg-[#C62828] text-[#FFFDE7] flex items-center justify-center hover:bg-[#B71C1C] shadow-lg shadow-red-200 hover:scale-110 transition-transform z-20 border-2 border-white"
+                    className="absolute bottom-4 right-4 w-12 h-12 rounded-full bg-[#C62828] text-[#FFFDE7] flex items-center justify-center hover:bg-[#B71C1C] shadow-lg shadow-red-200 hover:scale-110 transition-transform z-20 border-2 border-white"
                   >
-                    <Volume2 size={24} />
+                    <Volume2 size={20} />
                   </button>
                 </div>
               </div>
 
               {/* 背面 (中文) - 復古深色 */}
-              <div className="absolute w-full h-full backface-hidden bg-[#4E342E] rounded-[2rem] shadow-xl text-[#FFF8E1] flex flex-col items-center justify-center p-6 text-center rotate-y-180 relative border-4 border-[#8D6E63]">
+              <div className="absolute top-0 left-0 w-full h-full backface-hidden bg-[#4E342E] rounded-[2rem] shadow-xl text-[#FFF8E1] flex flex-col items-center justify-center p-6 text-center rotate-y-180 border-4 border-[#8D6E63]">
                  <div className="absolute top-6 right-8 text-white/10 font-black text-4xl font-serif">ZH</div>
                  
                  <div className="flex-1 flex flex-col items-center justify-center">
