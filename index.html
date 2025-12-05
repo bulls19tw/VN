@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 關鍵：加入這個 meta 標籤可以讓 Google TTS 讀取更順利 -->
+    <meta name="referrer" content="no-referrer">
     <title>輕鬆快樂學越語</title>
     <!-- 引入 React 和 Tailwind -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -489,45 +491,32 @@
             const [currentView, setCurrentView] = useState('home'); 
             const [score, setScore] = useState(0);
             
+            // 修正版 2.0：語音播放終極方案 (同步分流)
             const speak = (text) => {
-                // 1. 優先使用裝置內建的越南語發音 (品質最好，且離線可用)
-                if ('speechSynthesis' in window) {
-                    const voices = window.speechSynthesis.getVoices();
-                    // 嚴格比對 vi-VN，避免抓到奇怪的語言
-                    const viVoice = voices.find(v => v.lang === 'vi-VN'); 
-
-                    if (viVoice) {
-                        window.speechSynthesis.cancel();
-                        const utterance = new SpeechSynthesisUtterance(text);
-                        utterance.voice = viVoice;
-                        utterance.lang = 'vi-VN';
-                        utterance.rate = 0.8; 
-                        window.speechSynthesis.speak(utterance);
-                        return;
+                const voices = window.speechSynthesis.getVoices();
+                const viVoice = voices.find(v => v.lang.includes('vi'));
+                
+                // 1. 如果有找到越南語音 (通常是手機) -> 用內建
+                // 2. 如果沒找到 (通常是電腦) -> 直接用 Google TTS 播放音檔，不經過 SpeechSynthesis
+                if (viVoice) {
+                    window.speechSynthesis.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.voice = viVoice;
+                    utterance.lang = 'vi-VN';
+                    utterance.rate = 0.8; 
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    // 電腦版救星：直接播音檔，繞過亂念的英文引擎
+                    try {
+                        // 使用 client=tw-ob 參數通常最穩定
+                        const audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=vi`);
+                        audio.play().catch(e => {
+                            console.error("Audio play failed", e);
+                        });
+                    } catch (error) {
+                        console.error("TTS Fallback failed", error);
                     }
                 }
-
-                // 2. 如果沒有內建，使用 Google 翻譯發音 (雲端)
-                // 我們嘗試兩個不同的來源以增加成功率
-                const playAudio = (url) => {
-                    return new Promise((resolve, reject) => {
-                        const audio = new Audio(url);
-                        audio.onended = resolve;
-                        audio.onerror = reject;
-                        audio.play().catch(reject);
-                    });
-                };
-
-                const gtxUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=${encodeURIComponent(text)}&tl=vi`;
-                const twObUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=vi`;
-
-                playAudio(gtxUrl).catch(() => {
-                    console.log('GTX failed, trying TW-OB...');
-                    playAudio(twObUrl).catch(() => {
-                        console.error('All audio sources failed');
-                        // 絕對不要回退到預設語音，因為那會變成英文拼音
-                    });
-                });
             };
 
             const renderView = () => {
